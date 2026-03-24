@@ -1,0 +1,222 @@
+{% extends "portal/base.html" %}
+{% block title %}Dashboard — JobPortal{% endblock %}
+
+{% block extra_head %}
+<style>
+  .page-body { padding: 40px 0 80px; }
+  .page-header { margin-bottom: 32px; }
+  .page-header h1 { font-size: 30px; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
+  .page-header p { color: var(--gray-500); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+  @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 22px; }
+  .stat-icon { width: 44px; height: 44px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .stat-value { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; color: var(--gray-900); }
+  .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 768px) { .dash-grid { grid-template-columns: 1fr; } }
+
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .section-header h2 { font-size: 17px; font-weight: 700; font-family: 'Sora', sans-serif; color: var(--gray-900); }
+  .section-header a { font-size: 13px; color: var(--blue-600); font-weight: 500; text-decoration: none; }
+
+  .mini-card { border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 14px; transition: background .15s; }
+  .mini-card + .mini-card { margin-top: 10px; }
+  .mini-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .mini-title { font-weight: 600; font-size: 14px; color: var(--gray-900); }
+  .mini-meta  { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gray-500); }
+
+  .saved-card { display: flex; gap: 14px; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 14px; text-decoration: none; color: inherit; transition: background .15s; }
+  .saved-card + .saved-card { margin-top: 10px; }
+  .saved-card:hover { background: var(--gray-50); }
+  .saved-logo { width: 48px; height: 48px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+  .saved-info { flex: 1; min-width: 0; }
+  .saved-title { font-weight: 600; font-size: 14px; color: var(--gray-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .saved-meta  { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--gray-600); margin: 3px 0; }
+
+  .status-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .status-grid { grid-template-columns: repeat(3, 1fr); } }
+  .status-tile { border-radius: var(--radius); border: 1px solid; padding: 16px; text-align: center; }
+  .status-tile-num { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; color: var(--gray-900); }
+  .status-tile-label { font-size: 12px; color: var(--gray-600); margin-top: 2px; }
+
+  .cta-banner { background: linear-gradient(135deg, #2563eb, #1e40af); border-radius: var(--radius-xl); padding: 40px; color: #fff; margin-top: 20px; }
+  .cta-banner h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .cta-banner p { color: rgba(255,255,255,.8); margin-bottom: 24px; }
+  .cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-white { background: #fff; color: var(--blue-700); font-weight: 600; }
+  .btn-white:hover { background: var(--blue-50); }
+  .btn-outline-white { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.3); }
+  .btn-outline-white:hover { background: rgba(255,255,255,.2); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="container">
+    <div class="page-header">
+      <h1>Welcome back, {{ user.first_name }}!</h1>
+      <p>Here's an overview of your job search activity.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+        </div>
+        <div class="stat-value">{{ counts.total }}</div>
+        <div class="stat-label">Total Applications</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef9c3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a16207" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <div class="stat-value">{{ counts.pending }}</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#f3e8ff">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7e22ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="stat-value">{{ counts.reviewed }}</div>
+        <div class="stat-label">Under Review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#f0fdf4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+        </div>
+        <div class="stat-value">{{ counts.interviewed }}</div>
+        <div class="stat-label">Interviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fff7ed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+        </div>
+        <div class="stat-value">{{ saved_jobs|length }}</div>
+        <div class="stat-label">Saved Jobs</div>
+      </div>
+    </div>
+
+    <!-- Two columns -->
+    <div class="dash-grid">
+      <!-- Recent Applications -->
+      <div class="card">
+        <div class="section-header">
+          <h2>Recent Applications</h2>
+          <a href="{% url 'job_listings' %}">Browse jobs</a>
+        </div>
+        {% if recent_apps %}
+          {% for app in recent_apps %}
+            <div class="mini-card">
+              <div class="mini-card-top">
+                <div>
+                  <div class="mini-title">{{ app.job.title }}</div>
+                  <div class="mini-meta">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/></svg>
+                    {{ app.job.company }}
+                  </div>
+                </div>
+                <span class="badge
+                  {% if app.status == 'pending' %}badge-yellow
+                  {% elif app.status == 'reviewed' %}badge-blue
+                  {% elif app.status == 'interviewed' %}badge-purple
+                  {% elif app.status == 'accepted' %}badge-green
+                  {% elif app.status == 'rejected' %}badge-red
+                  {% endif %}">
+                  {{ app.status|capfirst }}
+                </span>
+              </div>
+              <div class="mini-meta">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                Applied {{ app.applied_date }}
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:32px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/></svg>
+            <p>No applications yet</p>
+            <a href="{% url 'job_listings' %}">Browse jobs</a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Saved Jobs -->
+      <div class="card">
+        <div class="section-header">
+          <h2>Saved Jobs</h2>
+          <a href="{% url 'job_listings' %}">Browse jobs</a>
+        </div>
+        {% if saved_jobs %}
+          {% for saved in saved_jobs %}
+            <a class="saved-card" href="{% url 'job_detail' saved.job.pk %}">
+              <img class="saved-logo" src="{{ saved.job.logo }}" alt="{{ saved.job.company }}"
+                   onerror="this.src='https://placehold.co/48x48/e5e7eb/9ca3af?text={{ saved.job.company|first }}'">
+              <div class="saved-info">
+                <div class="saved-title">{{ saved.job.title }}</div>
+                <div class="saved-meta">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/></svg>
+                  {{ saved.job.company }}
+                </div>
+                <div class="saved-meta" style="font-size:12px;color:var(--gray-400)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {{ saved.job.location }}
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:32px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+            <p>No saved jobs yet</p>
+            <a href="{% url 'job_listings' %}">Find jobs to save</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Status Breakdown -->
+    <div class="card">
+      <h2 style="font-size:17px;font-weight:700;font-family:'Sora',sans-serif;color:var(--gray-900);margin-bottom:18px">
+        Application Status Breakdown
+      </h2>
+      <div class="status-grid">
+        <div class="status-tile" style="background:var(--yellow-50);border-color:var(--yellow-200)">
+          <div class="status-tile-num">{{ counts.pending }}</div>
+          <div class="status-tile-label">Pending</div>
+        </div>
+        <div class="status-tile" style="background:var(--blue-50);border-color:var(--blue-100)">
+          <div class="status-tile-num">{{ counts.reviewed }}</div>
+          <div class="status-tile-label">Reviewed</div>
+        </div>
+        <div class="status-tile" style="background:var(--purple-50);border-color:var(--purple-200)">
+          <div class="status-tile-num">{{ counts.interviewed }}</div>
+          <div class="status-tile-label">Interviewed</div>
+        </div>
+        <div class="status-tile" style="background:var(--green-50);border-color:var(--green-200)">
+          <div class="status-tile-num">{{ counts.accepted }}</div>
+          <div class="status-tile-label">Accepted</div>
+        </div>
+        <div class="status-tile" style="background:var(--red-50);border-color:var(--red-200)">
+          <div class="status-tile-num">{{ counts.rejected }}</div>
+          <div class="status-tile-label">Rejected</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <h2>Ready to take the next step?</h2>
+      <p>Explore new opportunities and advance your career.</p>
+      <div class="cta-btns">
+        <a href="{% url 'job_listings' %}" class="btn btn-white btn-lg">Browse All Jobs</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

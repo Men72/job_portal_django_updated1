@@ -1,0 +1,167 @@
+{% extends "portal/base.html" %}
+{% block title %}{{ job.title }} — JobPortal{% endblock %}
+
+{% block extra_head %}
+<style>
+  .page-body { padding: 40px 0 80px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--gray-600); font-size: 14px; margin-bottom: 24px; font-weight: 500; text-decoration: none; }
+  .back-btn:hover { color: var(--gray-900); }
+  .job-header-top { display: flex; gap: 24px; align-items: flex-start; margin-bottom: 24px; }
+  .job-header-logo { width: 80px; height: 80px; border-radius: var(--radius-lg); object-fit: cover; border: 1px solid var(--gray-200); flex-shrink: 0; }
+  .job-header-info h1 { font-size: 28px; font-weight: 800; color: var(--gray-900); margin-bottom: 8px; }
+  .job-company-row { display: flex; align-items: center; gap: 6px; font-size: 17px; color: var(--gray-700); margin-bottom: 14px; }
+  .job-meta-row { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; color: var(--gray-600); }
+  .job-meta-row span { display: flex; align-items: center; gap: 5px; }
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
+  .section-title { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 16px; }
+  .requirements-list { list-style: none; display: flex; flex-direction: column; gap: 10px; padding: 0; }
+  .requirements-list li { display: flex; gap: 10px; color: var(--gray-700); font-size: 14px; line-height: 1.6; }
+  .req-dot { color: var(--blue-500); font-size: 18px; }
+  .app-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .app-form-grid { grid-template-columns: 1fr; } }
+  .save-form { display: inline; }
+  .save-btn-filled { background: var(--orange-50); color: var(--orange-700); border-color: var(--orange-200); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="container" style="max-width:860px">
+    <a href="{% url 'job_listings' %}" class="back-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      Back to jobs
+    </a>
+
+    <!-- Job Header -->
+    <div class="card">
+      <div class="job-header-top">
+        <img class="job-header-logo" src="{{ job.logo }}" alt="{{ job.company }}"
+             onerror="this.src='https://placehold.co/80x80/e5e7eb/9ca3af?text={{ job.company|first }}'">
+        <div class="job-header-info">
+          <h1>{{ job.title }}</h1>
+          <div class="job-company-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+            {{ job.company }}
+          </div>
+          <div class="job-meta-row">
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              {{ job.location }}
+            </span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              {{ job.salary }}
+            </span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Posted {% if job.days_ago == 0 %}today{% else %}{{ job.days_ago }} day{{ job.days_ago|pluralize }} ago{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-row">
+        <button class="btn btn-primary btn-lg" id="applyToggleBtn" type="button" onclick="toggleApplyForm()">
+          Apply Now
+        </button>
+        <span class="badge badge-blue" style="padding:10px 16px;font-size:14px">{{ job.type }}</span>
+
+        {% if user.is_authenticated %}
+          <form class="save-form" method="post" action="{% url 'toggle_save_job' job.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline {% if is_saved %}save-btn-filled{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{% if is_saved %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+              {% if is_saved %}Saved{% else %}Save Job{% endif %}
+            </button>
+          </form>
+        {% endif %}
+
+        {% if user.is_authenticated and user.role == 'admin' %}
+          <a href="{% url 'edit_job' job.pk %}" class="btn btn-outline btn-lg">✏️ Edit Job</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Application Form -->
+    <div class="card mt-6" id="applyFormCard" style="display:none">
+      <h2 class="section-title">Submit Your Application</h2>
+
+      {% if submitted %}
+        <div class="alert alert-success mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+          <div>
+            <strong>Application Submitted!</strong><br>
+            We'll review your application and get back to you soon.
+          </div>
+        </div>
+      {% else %}
+        <form method="post" enctype="multipart/form-data" action="{% url 'job_detail' job.pk %}#apply">
+          {% csrf_token %}
+          <input type="hidden" name="apply" value="1">
+          <div class="app-form-grid">
+            <div class="form-group">
+              <label>{{ app_form.applicant_name.label }} *</label>
+              {{ app_form.applicant_name }}
+              {% if app_form.applicant_name.errors %}<p class="field-error">{{ app_form.applicant_name.errors.0 }}</p>{% endif %}
+            </div>
+            <div class="form-group">
+              <label>{{ app_form.applicant_email.label }} *</label>
+              {{ app_form.applicant_email }}
+              {% if app_form.applicant_email.errors %}<p class="field-error">{{ app_form.applicant_email.errors.0 }}</p>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ app_form.applicant_phone.label }} *</label>
+            {{ app_form.applicant_phone }}
+          </div>
+          <div class="form-group">
+            <label>{{ app_form.resume.label }} *</label>
+            {{ app_form.resume }}
+            {% if app_form.resume.errors %}<p class="field-error">{{ app_form.resume.errors.0 }}</p>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>{{ app_form.cover_letter.label }} *</label>
+            {{ app_form.cover_letter }}
+          </div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg">Submit Application</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <!-- Job Description -->
+    <div class="card mt-6">
+      <h2 class="section-title">Job Description</h2>
+      <p style="color:var(--gray-700);line-height:1.75;font-size:15px">{{ job.description }}</p>
+    </div>
+
+    <!-- Requirements -->
+    <div class="card mt-6">
+      <h2 class="section-title">Requirements</h2>
+      <ul class="requirements-list">
+        {% for req in job.get_requirements_list %}
+          <li><span class="req-dot">•</span><span>{{ req }}</span></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function toggleApplyForm() {
+    const card = document.getElementById('applyFormCard');
+    const btn  = document.getElementById('applyToggleBtn');
+    const open = card.style.display !== 'none';
+    card.style.display = open ? 'none' : 'block';
+    btn.textContent = open ? 'Apply Now' : 'Hide Application';
+  }
+
+  // Auto-open form if there were validation errors or after submit
+  {% if app_form.errors or submitted %}
+    document.getElementById('applyFormCard').style.display = 'block';
+    document.getElementById('applyToggleBtn').textContent = 'Hide Application';
+  {% endif %}
+</script>
+{% endblock %}

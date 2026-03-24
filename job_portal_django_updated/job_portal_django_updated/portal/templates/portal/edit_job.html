@@ -1,0 +1,100 @@
+{% extends "portal/base.html" %}
+{% block title %}Edit Job — JobPortal{% endblock %}
+
+{% block extra_head %}
+<style>
+  .page-body { padding: 40px 0 80px; }
+  .page-header { margin-bottom: 32px; }
+  .page-header h1 { font-size: 30px; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
+  .page-header p { color: var(--gray-500); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  .form-footer { display: flex; gap: 12px; margin-top: 32px; }
+  .btn-danger { background: var(--red-600); color: #fff; border: none; }
+  .btn-danger:hover { background: #b91c1c; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="container" style="max-width:760px">
+
+    <div class="page-header">
+      <h1>Edit Job</h1>
+      <p>Update the details for <strong>{{ job.title }}</strong></p>
+    </div>
+
+    <div class="card">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ form.title.label }} *</label>
+            {{ form.title }}
+            {% if form.title.errors %}<p class="field-error">{{ form.title.errors.0 }}</p>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>{{ form.company.label }} *</label>
+            {{ form.company }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ form.location.label }} *</label>
+            {{ form.location }}
+          </div>
+          <div class="form-group">
+            <label>{{ form.type.label }} *</label>
+            {{ form.type }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.salary.label }} *</label>
+          {{ form.salary }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.description.label }} *</label>
+          {{ form.description }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.requirements.label }} *</label>
+          {{ form.requirements }}
+          <p class="hint">Enter each requirement on a separate line</p>
+        </div>
+
+        <div class="form-footer">
+          <button type="submit" class="btn btn-primary btn-lg" style="flex:1">
+            Save Changes
+          </button>
+          <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline btn-lg" style="flex:1;text-align:center">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Delete Job Section -->
+    <div class="card" style="margin-top:20px; border-color: #fecaca;">
+      <h3 style="color:#dc2626; font-size:16px; font-weight:700; margin-bottom:8px;">
+        ⚠️ Danger Zone
+      </h3>
+      <p style="color:var(--gray-500); font-size:14px; margin-bottom:16px;">
+        Deleting this job is permanent and cannot be undone. All applications for this job will also be deleted.
+      </p>
+      <form method="post" action="{% url 'delete_job' job.pk %}"
+            onsubmit="return confirm('Are you sure you want to delete \'{{ job.title }}\'? This cannot be undone.')">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          Delete This Job
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
