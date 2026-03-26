@@ -12,7 +12,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
     avatar = models.URLField(
         blank=True,
-        default='https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop'
+        default='https://cdn-icons-png.flaticon.com/512/3789/3789820.png'
     )
 
     @property

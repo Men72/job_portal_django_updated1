@@ -47,7 +47,7 @@ class JobSeekerSignupForm(forms.ModelForm):
         user.username = self.cleaned_data['email']
         user.role = 'user'
         user.set_password(self.cleaned_data['password'])
-        user.avatar = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop'
+        user.avatar = 'https://cdn-icons-png.flaticon.com/512/3789/3789820.png'
         if commit:
             user.save()
         return user
@@ -86,7 +86,7 @@ class EmployerSignupForm(forms.ModelForm):
         user.username = self.cleaned_data['email']
         user.role = 'employer'
         user.set_password(self.cleaned_data['password'])
-        user.avatar = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
+        user.avatar = 'https://cdn-icons-png.flaticon.com/512/9079/9079615.png'
         if commit:
             user.save()
         return user

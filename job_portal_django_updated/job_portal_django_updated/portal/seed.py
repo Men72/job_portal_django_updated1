@@ -14,7 +14,7 @@ if not User.objects.filter(email='user@example.com').exists():
         first_name='John',
         last_name='Doe',
         role='user',
-        avatar='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop'
+        avatar='https://cdn-icons-png.flaticon.com/512/3789/3789820.png'
     )
     u.set_password('password')
     u.save()
@@ -28,7 +28,7 @@ if not User.objects.filter(email='admin@example.com').exists():
         last_name='User',
         role='admin',
         is_staff=True,
-        avatar='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
+        avatar='https://cdn-icons-png.flaticon.com/512/9079/9079615.png'
     )
     a.set_password('admin')
     a.save()
