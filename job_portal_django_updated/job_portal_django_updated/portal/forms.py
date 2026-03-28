@@ -6,25 +6,25 @@ from .models import User, Job, Application
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(
         label='Email Address',
-        widget=forms.EmailInput(attrs={'placeholder': 'you@example.com', 'autofocus': True})
+        widget=forms.EmailInput(attrs={'placeholder': 'Email Address', 'autofocus': True})
     )
     password = forms.CharField(
         label='Password',
-        widget=forms.PasswordInput(attrs={'placeholder': '••••••••'})
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'})
     )
 
 
 class JobSeekerSignupForm(forms.ModelForm):
-    password  = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '••••••••'}))
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'placeholder': '••••••••'}))
+    password  = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
 
     class Meta:
         model  = User
         fields = ['first_name', 'last_name', 'email', 'password', 'password2']
         widgets = {
-            'first_name': forms.TextInput(attrs={'placeholder': 'John'}),
-            'last_name':  forms.TextInput(attrs={'placeholder': 'Doe'}),
-            'email':      forms.EmailInput(attrs={'placeholder': 'you@example.com'}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'First Name'}),
+            'last_name':  forms.TextInput(attrs={'placeholder': 'Last Name'}),
+            'email':      forms.EmailInput(attrs={'placeholder': 'Email Address'}),
         }
 
     def clean_email(self):
@@ -54,16 +54,16 @@ class JobSeekerSignupForm(forms.ModelForm):
 
 
 class EmployerSignupForm(forms.ModelForm):
-    password  = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '••••••••'}))
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'placeholder': '••••••••'}))
+    password  = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
 
     class Meta:
         model  = User
         fields = ['first_name', 'last_name', 'email', 'password', 'password2']
         widgets = {
-            'first_name': forms.TextInput(attrs={'placeholder': 'Company Contact Name'}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'First Name'}),
             'last_name':  forms.TextInput(attrs={'placeholder': 'Last Name'}),
-            'email':      forms.EmailInput(attrs={'placeholder': 'name@company.com'}),
+            'email':      forms.EmailInput(attrs={'placeholder': 'Email Address'}),
         }
 
     def clean_email(self):
@@ -86,7 +86,7 @@ class EmployerSignupForm(forms.ModelForm):
         user.username = self.cleaned_data['email']
         user.role = 'employer'
         user.set_password(self.cleaned_data['password'])
-        user.avatar = 'https://cdn-icons-png.flaticon.com/512/9079/9079615.png'
+        user.avatar = 'https://cdn-icons-png.flaticon.com/256/6171/6171591.png'
         if commit:
             user.save()
         return user
@@ -114,9 +114,9 @@ class ApplicationForm(forms.ModelForm):
         model  = Application
         fields = ['applicant_name', 'applicant_email', 'applicant_phone', 'resume', 'cover_letter']
         widgets = {
-            'applicant_name':  forms.TextInput(attrs={'placeholder': 'John Doe'}),
-            'applicant_email': forms.EmailInput(attrs={'placeholder': 'you@example.com'}),
-            'applicant_phone': forms.TextInput(attrs={'placeholder': '555-0123'}),
+            'applicant_name':  forms.TextInput(attrs={'placeholder': 'Full Name'}),
+            'applicant_email': forms.EmailInput(attrs={'placeholder': 'Email Address'}),
+            'applicant_phone': forms.TextInput(attrs={'placeholder': 'Phone Number'}),
             'resume':          forms.FileInput(),
             'cover_letter':    forms.Textarea(attrs={'rows': 6, 'placeholder': "Tell us why you're a great fit…"}),
         }
