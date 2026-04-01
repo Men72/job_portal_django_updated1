@@ -137,6 +137,52 @@
         <div class="kpi-value">{{ total_jobs }}</div>
         <div class="kpi-label">Open Jobs</div>
       </div>
+      <!-- ✅ Total Employees card -->
+      <div class="kpi-card fade-up" style="animation-delay:.25s">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#f0fdf4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <span class="kpi-trend up">Seekers</span>
+        </div>
+        <div class="kpi-value">{{ counts.total_employees }}</div>
+        <div class="kpi-label">Total Employees</div>
+      </div>
+
+      <!-- ✅ Total Employers card -->
+      <div class="kpi-card fade-up" style="animation-delay:.30s">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#ede9fe">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+              <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+              <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+            </svg>
+          </div>
+          <span class="kpi-trend up">Companies</span>
+        </div>
+        <div class="kpi-value">{{ counts.total_employers }}</div>
+        <div class="kpi-label">Total Employers</div>
+      </div>
+
+      <!-- ✅ Total Admins card -->
+      <div class="kpi-card fade-up" style="animation-delay:.35s">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fef9c3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a16207" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/>
+              <path d="M12 14c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/>
+              <circle cx="19" cy="8" r="3"/>
+            </svg>
+          </div>
+          <span class="kpi-trend neu">Staff</span>
+        </div>
+        <div class="kpi-value">{{ counts.total_admins }}</div>
+        <div class="kpi-label">Total Admins</div>
+      </div>
     </div>
 
     <!-- Main grid: table + sidebar widgets -->

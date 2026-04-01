@@ -229,6 +229,10 @@ def admin_dashboard(request):
         'total_jobs':     all_jobs.count(),
         'total_apps':     all_apps.count(),
         'total_users':    all_users.count(),
+        # Added employee/employer/admin counts
+        'total_employees': all_users.filter(role='user').count(),
+        'total_employers': all_users.filter(role='employer').count(),
+        'total_admins':    all_users.filter(role='admin').count(),
         'pending':        all_apps.filter(status='pending').count(),
         'reviewed':       all_apps.filter(status='reviewed').count(),
         'interviewed':    all_apps.filter(status='interviewed').count(),
