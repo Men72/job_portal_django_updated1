@@ -13,23 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ── Mobile hamburger menu ───────────────────────────────
-  const mobileBtn = document.getElementById('mobileMenuBtn');
-  const mobileNav = document.getElementById('mobileNav');
-  if (mobileBtn && mobileNav) {
-    mobileBtn.addEventListener('click', function () {
-      const isOpen = mobileNav.classList.toggle('open');
-      mobileBtn.classList.toggle('open', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-    });
-    // Close on link click
-    mobileNav.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        mobileNav.classList.remove('open');
-        mobileBtn.classList.remove('open');
-        document.body.style.overflow = '';
-      });
-    });
-  }
+  // Removed: Bootstrap offcanvas handles this now
 
   // ── Admin sidebar toggle (mobile) ───────────────────────
   const sidebarToggle = document.getElementById('adminSidebarToggle');
