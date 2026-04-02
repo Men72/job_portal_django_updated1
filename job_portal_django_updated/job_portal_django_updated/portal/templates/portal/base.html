@@ -16,45 +16,49 @@
 <header class="site-header">
   <div class="container header-inner">
     <a href="{% url 'job_listings' %}" class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+      </svg>
       TheJobPlus
     </a>
 
-    <div class="header-right">
+    <!-- ✅ Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" type="button"
+            onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Nav + Auth -->
+    <div class="header-right" id="mobileMenu">
       <nav class="nav">
-        <a href="{% url 'job_listings' %}" class="nav-link {% if active == 'listings' %}active{% endif %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <a href="{% url 'job_listings' %}"
+           class="nav-link {% if active == 'listings' %}active{% endif %}">
           Browse Jobs
         </a>
 
         {% if user.is_authenticated %}
           {% if not user.is_employer %}
-            <a href="{% url 'dashboard' %}" class="nav-link {% if active == 'dashboard' %}active{% endif %}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <a href="{% url 'dashboard' %}"
+               class="nav-link {% if active == 'dashboard' %}active{% endif %}">
               Dashboard
             </a>
           {% endif %}
           {% if user.is_employer %}
-            <a href="{% url 'post_job' %}" class="nav-link {% if active == 'post_job' %}active{% endif %}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M8 12h8"/>
-                <path d="M12 8v8"/></svg>
+            <a href="{% url 'post_job' %}"
+               class="nav-link {% if active == 'post_job' %}active{% endif %}">
               Post a Job
             </a>
-            <a href="{% url 'applications' %}" class="nav-link {% if active == 'applications' %}active{% endif %}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
-                <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-                <path d="M10 9H8"/><path d="M16 13H8"/>
-                <path d="M16 17H8"/>
-              </svg>
+            <a href="{% url 'applications' %}"
+               class="nav-link {% if active == 'applications' %}active{% endif %}">
               Applications
             </a>
           {% endif %}
           {% if user.role == 'admin' %}
             <a href="{% url 'admin_dashboard' %}" class="nav-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M12 14c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/><circle cx="19" cy="8" r="3"/><path d="M19 5v1m0 4v1m-1.5-4.5.7.7m1.6 2.6.7.7M16 8h1m4 0h1m-4.5 1.5.7-.7m1.6-2.6.7-.7"/></svg>
               Admin Dashboard
             </a>
           {% endif %}
@@ -64,27 +68,34 @@
       {% if user.is_authenticated %}
         <div class="user-menu-wrap" id="userMenuWrap">
           <button class="user-btn" id="userMenuBtn" type="button">
-            <img src="{{ user.avatar }}" alt="{{ user.get_full_name }}" class="avatar-sm"
+            <img src="{{ user.avatar }}" alt="{{ user.get_full_name }}"
+                 class="avatar-sm"
                  onerror="this.src='https://placehold.co/32x32/e5e7eb/9ca3af?text={{ user.first_name|first }}'">
             <span>{{ user.first_name }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
           </button>
           <div class="dropdown" id="userDropdown">
             <div class="dropdown-header">
               <p class="dropdown-name">{{ user.get_full_name }}</p>
               <p class="dropdown-email">{{ user.email }}</p>
               <span class="role-badge">
-                {% if user.role == 'admin' %}
-                  Admin
-                {% elif user.role == 'employer' %}
-                  Employer
-                {% else %}
-                  Job Seeker
-                {% endif %}
+                {% if user.role == 'admin' %}Admin
+                {% elif user.role == 'employer' %}Employer
+                {% else %}Job Seeker{% endif %}
               </span>
             </div>
             <a href="{% url 'logout' %}" class="dropdown-item danger">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" x2="9" y1="12" y2="12"/>
+              </svg>
               Sign Out
             </a>
           </div>
@@ -116,5 +127,7 @@
 
 <script src="{% static 'portal/js/app.js' %}"></script>
 {% block extra_js %}{% endblock %}
+
+
 </body>
 </html>
